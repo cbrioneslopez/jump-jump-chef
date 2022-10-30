@@ -17,11 +17,9 @@ class Ingredient {
             if (ingredient.name === this.name) this.imageInstance.src = ingredient.imagesrc
         })
         this.ctx.drawImage(this.imageInstance, this.posX, this.posY, this.width, this.height)
-
-
     }
     moveIngredient() {
-        this.posX -= 20
+        this.posX -= 12
     }
 
 
