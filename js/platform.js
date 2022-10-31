@@ -5,10 +5,12 @@ class Platform {
         this.positionY = positionY
         this.width = width
         this.height = height
+        this.image = new Image()
+        this.image.src = "./images/platform.png"
     }
 
     drawPlatform() {
         this.ctx.fillStyle = "blue"
-        this.ctx.fillRect(this.positionX, this.positionY, this.width, this.height)
+        this.ctx.drawImage(this.image, this.positionX, this.positionY, this.width, this.height)
     }
 }

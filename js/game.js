@@ -62,6 +62,7 @@ const Game = {
     },
     createPlatform() {
         this.platforms.push(new Platform(this.ctx, 300, 400, 200, 50))
+        this.platforms.push(new Platform(this.ctx, 700, 200, 200, 50))
     },
     checkCollisionPlatform(platform) {
         if (this.player.playerPosition.x <= platform.positionX + platform.width &&
@@ -71,7 +72,7 @@ const Game = {
 
             if (this.player.speed.y > 1) {
                 this.player.speed.y = 0
-                this.player.playerPosition.y = platform.positionY - this.player.playerSize.h - 0.01
+                this.player.playerPosition.y = platform.positionY - this.player.playerSize.h - 0.10
 
             }
             if (this.player.speed.y < -1) {
@@ -86,17 +87,18 @@ const Game = {
             this.player.playerPosition.x + this.player.playerSize.w >= ingredient.posX &&
             this.player.playerPosition.y + this.player.playerSize.h >= ingredient.posY &&
             this.player.playerPosition.y <= ingredient.posY + ingredient.height) {
+            this.obstacles.splice(this.obstacles.indexOf(ingredient.name), 1)
             if (this.recipe.includes(ingredient.name)) {
 
                 this.recipe.splice(this.recipe.indexOf(ingredient.name), 1)
-                this.obstacles.splice(this.obstacles.indexOf(ingredient.name), 1)
 
             } else {
                 this.player.lifes--
                 console.log(this.player.lifes)
                 let ingredientIndex = this.obstacles.indexOf(ingredient)
-                this.obstacles.splice(ingredientIndex, 1)
+                // this.obstacles.splice(ingredientIndex, 1)
             }
+
         }
         if (this.recipe.length === 0) this.createRecipe()
     },
