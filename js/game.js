@@ -17,14 +17,13 @@ const Game = {
         this.setDimensions()
         this.createPlatform()
         this.createRecipe()
-        //this.createIngredient()//
         this.start()
     },
     start() {
         this.player = new Player(this.ctx, this.canvasSize)
         this.intervalId = setInterval(() => {
             this.framesCounter++
-            if (this.framesCounter % 100 === 0) this.createIngredient()
+            if (this.framesCounter % 200 === 0) this.createIngredient()
             this.clearAll()
             this.drawAll()
             this.obstacles.forEach((ingredient) => {
@@ -58,6 +57,7 @@ const Game = {
         this.createBackground()
         this.player.updatePlayer()
         this.drawRecipe()
+        this.drawLifes()
 
     },
     createPlatform() {
@@ -81,14 +81,16 @@ const Game = {
             }
         }
     },
-    checkCollisionIngredient(ingredient) {
+    checkCollisionIngredient(ingredient) { // PENDIENTE POR SOLUCIONAR QUE NO ELIMINE 2 VECES
         if (this.player.playerPosition.x <= ingredient.posX + ingredient.width &&
             this.player.playerPosition.x + this.player.playerSize.w >= ingredient.posX &&
             this.player.playerPosition.y + this.player.playerSize.h >= ingredient.posY &&
             this.player.playerPosition.y <= ingredient.posY + ingredient.height) {
             if (this.recipe.includes(ingredient.name)) {
+
                 this.recipe.splice(this.recipe.indexOf(ingredient.name), 1)
-                if (this.recipe.length === 0) this.createRecipe()
+                this.obstacles.splice(this.obstacles.indexOf(ingredient.name), 1)
+
             } else {
                 this.player.lifes--
                 console.log(this.player.lifes)
@@ -96,6 +98,7 @@ const Game = {
                 this.obstacles.splice(ingredientIndex, 1)
             }
         }
+        if (this.recipe.length === 0) this.createRecipe()
     },
     createBackground() {
         this.background = new Background(this.ctx, this.canvasSize.w, this.canvasSize.h)
@@ -129,5 +132,13 @@ const Game = {
     },
     clearIngredients() {
         this.obstacles = this.obstacles.filter(obstacle => obstacle.posX >= -70)
+    },
+    drawLifes() {
+        let heartImage = new Image()
+        heartImage.src = "./images/heart.png"
+        this.ctx.drawImage(heartImage, 400, 15, 30, 30)
+        this.ctx.font = "32px sans-serif"
+        this.ctx.fillStyle = "red"
+        this.ctx.fillText("" + this.player.lifes, 440, 40)
     }
 }
