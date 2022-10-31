@@ -3,8 +3,8 @@ class Ingredient {
         this.ctx = ctx
         this.posX = posX
         this.posY = posY
-        this.width = 70
-        this.height = 70
+        this.width = 50
+        this.height = 50
         this.name = name
         this.imageInstance = new Image()
         this.imageInstance.src = undefined
@@ -19,7 +19,7 @@ class Ingredient {
         this.ctx.drawImage(this.imageInstance, this.posX, this.posY, this.width, this.height)
     }
     moveIngredient() {
-        this.posX -= 12
+        this.posX -= 8
     }
 
 

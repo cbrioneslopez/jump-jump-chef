@@ -7,6 +7,7 @@ const Game = {
     background: undefined,
     ingredients: ["patata", "tomate", "carne", "lechuga", "cebolla"],
     recipe: [],
+    goodIngredientes: [],
     obstacles: [],
     platforms: [],
     background: undefined,
@@ -29,6 +30,15 @@ const Game = {
             this.obstacles.forEach((ingredient) => {
                 ingredient.drawIngredient()
                 ingredient.moveIngredient()
+                this.checkCollisionIngredient(ingredient)
+                this.clearIngredients()
+
+            })
+            console.log(this.recipe.length)
+            this.platforms.forEach((eachPlatform) => {
+                eachPlatform.drawPlatform()
+                this.checkCollisionPlatform(eachPlatform)
+
             })
         }, 1000 / this.FPS)
     },
@@ -48,23 +58,43 @@ const Game = {
         this.createBackground()
         this.player.updatePlayer()
         this.drawRecipe()
-        this.platforms.forEach((eachPlatform) => {
-            eachPlatform.drawPlatform()
-            this.checkCollision(eachPlatform)
 
-        })
     },
     createPlatform() {
-        this.platforms.push(new Platform(this.ctx, 100, 600, 200, 20))
+        this.platforms.push(new Platform(this.ctx, 300, 400, 200, 50))
     },
-    checkCollision(platform) {
-        if (this.player.playerPosition.y + this.player.playerSize.h <= platform.positionY &&
-            this.player.playerPosition.y + this.player.playerSize.h >= platform.positionY &&
+    checkCollisionPlatform(platform) {
+        if (this.player.playerPosition.x <= platform.positionX + platform.width &&
             this.player.playerPosition.x + this.player.playerSize.w >= platform.positionX &&
-            this.player.playerPosition.x <= platform.positionX + platform.width) {
-            this.player.gravity = 0
-        } else {
-            this.player.gravity = 1
+            this.player.playerPosition.y + this.player.playerSize.h >= platform.positionY &&
+            this.player.playerPosition.y <= platform.positionY + platform.height) {
+
+            if (this.player.speed.y > 1) {
+                this.player.speed.y = 0
+                this.player.playerPosition.y = platform.positionY - this.player.playerSize.h - 0.01
+
+            }
+            if (this.player.speed.y < -1) {
+                this.player.speed.y = 0
+                this.player.poisition.y = platform.positionY + platform.height + 0.01
+
+            }
+        }
+    },
+    checkCollisionIngredient(ingredient) {
+        if (this.player.playerPosition.x <= ingredient.posX + ingredient.width &&
+            this.player.playerPosition.x + this.player.playerSize.w >= ingredient.posX &&
+            this.player.playerPosition.y + this.player.playerSize.h >= ingredient.posY &&
+            this.player.playerPosition.y <= ingredient.posY + ingredient.height) {
+            if (this.recipe.includes(ingredient.name)) {
+                this.recipe.splice(this.recipe.indexOf(ingredient.name), 1)
+                if (this.recipe.length === 0) this.createRecipe()
+            } else {
+                this.player.lifes--
+                console.log(this.player.lifes)
+                let ingredientIndex = this.obstacles.indexOf(ingredient)
+                this.obstacles.splice(ingredientIndex, 1)
+            }
         }
     },
     createBackground() {
@@ -74,13 +104,17 @@ const Game = {
     createIngredient() {
         let chosenIndex = Math.floor(Math.random() * this.ingredients.length)
         let type = this.ingredients[chosenIndex]
-        this.obstacles.push(new Ingredient(this.ctx, this.canvasSize.w, 200, type))
-        this.obstacles.push(new Ingredient(this.ctx, this.canvasSize.w, 600, type))
+        let heightCreation = Math.floor(Math.random() * (this.canvasSize.h - this.player.playerSize.h) - this.player.playerSize.h + this.player.playerSize.h)
+        this.obstacles.push(new Ingredient(this.ctx, this.canvasSize.w, heightCreation, type))
     },
     createRecipe() {
-        for (let i = 0; i <= 2; i++) {
+
+        while (this.recipe.length < 3) {
             let chosenIngredient = Math.floor(Math.random() * this.ingredients.length)
-            this.recipe.push(this.ingredients[chosenIngredient])
+            if (!this.recipe.includes(this.ingredients[chosenIngredient])) {
+                this.recipe.push(this.ingredients[chosenIngredient])
+            }
+
         }
 
     },
@@ -92,5 +126,8 @@ const Game = {
         let thirdIngredient = new Ingredient(this.ctx, 150, 0, this.recipe[2])
         thirdIngredient.drawIngredient()
 
+    },
+    clearIngredients() {
+        this.obstacles = this.obstacles.filter(obstacle => obstacle.posX >= -70)
     }
 }
