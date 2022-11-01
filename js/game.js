@@ -15,7 +15,6 @@ const Game = {
     init() {
         this.getContext()
         this.setDimensions()
-        this.createPlatform()
         this.createRecipe()
         this.start()
         document.getElementById("restartButton").style.display = "none"
@@ -25,6 +24,7 @@ const Game = {
         this.intervalId = setInterval(() => {
             this.framesCounter++
             if (this.framesCounter % 200 === 0) this.createIngredient()
+            if (this.framesCounter % 150 === 0) this.createPlatform()
             this.clearAll()
             this.drawAll()
             this.checkWonGame()
@@ -62,9 +62,10 @@ const Game = {
 
     },
     createPlatform() {
-        this.platforms.push(new Platform(this.ctx, 300, 400, 200, 50))
-        this.platforms.push(new Platform(this.ctx, 700, 200, 200, 50))
-        this.platforms.push(new Platform(this.ctx, 1100, 400, 200, 50))
+        let randomHeight = Math.floor(Math.random() * ((this.canvasSize.h - 200) - (this.player.playerSize.h + 200)) + (this.player.playerSize.h + 200))
+
+        this.platforms.push(new Platform(this.ctx, this.canvasSize.w, randomHeight, 200, 50))
+
     },
 
     checkCollisionIngredient(ingredient) { // PENDIENTE POR SOLUCIONAR QUE NO ELIMINE 2 VECES

@@ -8,10 +8,11 @@ class Player {
         this.imageInstance = undefined
         this.playerImage = "./images/chef.gif"
         this.lifes = 3
-        this.keys = { leftKeyPressed: false, rightKeyPressed: false, spaceKeyPressed: false }
+        this.keys = { leftKeyPressed: false, rightKeyPressed: false, spaceKeyPressed: false, fkeyPressed: false }
         this.speed = { x: 15, y: 0 }
         this.platforms = platforms
         this.gravity = 1
+        this.knives = []
         this.canJump = false
         this.imageInstance = new Image()
         this.imageInstance.src = this.playerImage
@@ -27,6 +28,7 @@ class Player {
         if (this.keys.leftKeyPressed) this.moveLeft()
         if (this.keys.rightKeyPressed) this.moveRight()
         if (this.keys.spaceKeyPressed) this.playerJump()
+        if (this.keys.fkeyPressed) this.shoot()
         this.playerPosition.y += this.speed.y  //EN FUNCION DE SI ESTÁ EN EL AIRE O NO. SUMA LA VELOCIDAD (ESTA PUEDE SER 0 SI ESTÁ EN EL SUELO U OTRA SI ESTÁ EN EL AIRE)
         if (this.playerPosition.y + this.playerSize.h + this.speed.y <= this.canvasSize.h - this.playerSize.h) { //EN EL AIRE
             this.speed.y += this.gravity
@@ -34,6 +36,7 @@ class Player {
             this.speed.y = 0
             this.canJump = true
         }
+        this.knives.forEach((knife) => knife.drawKnife())
 
     }
     setEvents() {
@@ -48,6 +51,9 @@ class Player {
                 case "Space":
                     this.keys.spaceKeyPressed = true
                     break
+                case "KeyF":
+                    this.keys.fkeyPressed = true
+                    break
             }
         })
         document.addEventListener("keyup", ({ code }) => {
@@ -60,6 +66,9 @@ class Player {
                     break
                 case "Space":
                     this.keys.spaceKeyPressed = false
+                    break
+                case "KeyF":
+                    this.keys.fkeyPressed = false
                     break
             }
         })
@@ -76,25 +85,31 @@ class Player {
             this.canJump = false
         }
     }
-    checkCollisionPlatform() {
+    checkCollisionPlatform() {//verificar  saltos en plataformas
         this.platforms.forEach((platform) => {
             if (this.playerPosition.x <= platform.positionX + platform.width &&
                 this.playerPosition.x + this.playerSize.w >= platform.positionX &&
                 this.playerPosition.y + this.playerSize.h >= platform.positionY &&
                 this.playerPosition.y <= platform.positionY + platform.height) {
 
-                if (this.speed.y > 1) {
+                if (this.speed.y > 0) { //En esta colisión, el jugador está cayendo sobre la plataforma. Se iguala la velocidad a 0 y canJump a true para que pueda saltar
                     this.speed.y = 0
+                    this.playerPosition.x -= 3
                     this.canJump = true
-                    this.playerPosition.y = platform.positionY - this.playerSize.h - 0.10
+                    this.playerPosition.y = platform.positionY - this.playerSize.h
                 }
-                if (this.speed.y < -1) {
+                //caso de subir a la plataforma
+                if (this.speed.y < 0) {
                     this.speed.y = 0
-                    this.position.y = platform.positionY + platform.height
+                    this.playerPosition.y = platform.positionY + platform.height + 5
                 }
+                if (this.playerPosition.x < 0) this.playerPosition.x = 0
             }
         })
 
+    }
+    shoot() {
+        this.knives.push(new Knife(this.ctx, this.playerPosition.x + this.playerSize.w, this.playerPosition.y + (this.playerSize.h / 2)))
     }
 
 }

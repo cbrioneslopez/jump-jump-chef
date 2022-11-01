@@ -12,5 +12,9 @@ class Platform {
     drawPlatform() {
         this.ctx.fillStyle = "blue"
         this.ctx.drawImage(this.image, this.positionX, this.positionY, this.width, this.height)
+        this.movePlatform()
+    }
+    movePlatform() {
+        this.positionX -= 3
     }
 }
