@@ -7,7 +7,6 @@ const Game = {
     background: undefined,
     ingredients: ["patata", "tomate", "carne", "lechuga", "cebolla"],
     recipe: [],
-    goodIngredientes: [],
     obstacles: [],
     platforms: [],
     background: undefined,
@@ -18,6 +17,7 @@ const Game = {
         this.createPlatform()
         this.createRecipe()
         this.start()
+        document.getElementById("restartButton").style.display = "none"
     },
     start() {
         this.player = new Player(this.ctx, this.canvasSize)
@@ -26,6 +26,7 @@ const Game = {
             if (this.framesCounter % 200 === 0) this.createIngredient()
             this.clearAll()
             this.drawAll()
+            if (this.player.lifes === 0) this.gameOver()
             this.obstacles.forEach((ingredient) => {
                 ingredient.drawIngredient()
                 ingredient.moveIngredient()
@@ -143,5 +144,13 @@ const Game = {
         this.ctx.font = "32px sans-serif"
         this.ctx.fillStyle = "red"
         this.ctx.fillText("" + this.player.lifes, 440, 40)
+    },
+    gameOver() {
+        this.obstacles = []
+        this.recipe = []
+        this.platforms = []
+        this.clearAll()
+        clearInterval(this.intervalId)
+        document.getElementById("restartButton").style.display = "block"
     }
 }
