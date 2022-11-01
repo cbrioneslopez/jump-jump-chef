@@ -9,6 +9,7 @@ const Game = {
     recipe: [],
     obstacles: [],
     platforms: [],
+    completedRecipes: 0,
     background: undefined,
     player: undefined,
     init() {
@@ -26,6 +27,7 @@ const Game = {
             if (this.framesCounter % 200 === 0) this.createIngredient()
             this.clearAll()
             this.drawAll()
+            this.checkWonGame()
             if (this.player.lifes === 0) this.gameOver()
             this.obstacles.forEach((ingredient) => {
                 ingredient.drawIngredient()
@@ -102,7 +104,10 @@ const Game = {
             }
 
         }
-        if (this.recipe.length === 0) this.createRecipe()
+        if (this.recipe.length === 0) {
+            this.createRecipe()
+            this.completedRecipes++
+        }
     },
     createBackground() {
         this.background = new Background(this.ctx, this.canvasSize.w, this.canvasSize.h)
@@ -152,5 +157,11 @@ const Game = {
         this.clearAll()
         clearInterval(this.intervalId)
         document.getElementById("restartButton").style.display = "block"
+    },
+    checkWonGame() {
+        if (this.completedRecipes === 3) {
+            // AQUI VA LA IMAGEN DE GANAR Y ESO
+            this.gameOver()
+        }
     }
 }
