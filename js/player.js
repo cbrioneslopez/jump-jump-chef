@@ -10,7 +10,7 @@ class Player {
         this.lifes = 3
         this.keys = { leftKeyPressed: false, rightKeyPressed: false, spaceKeyPressed: false }
         this.speed = { x: 15, y: 0 }
-        this.gravity = 2
+        this.gravity = 1
         this.imageInstance = new Image()
         this.imageInstance.src = this.playerImage
         this.initPlayer()

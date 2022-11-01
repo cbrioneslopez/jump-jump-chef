@@ -63,6 +63,7 @@ const Game = {
     createPlatform() {
         this.platforms.push(new Platform(this.ctx, 300, 400, 200, 50))
         this.platforms.push(new Platform(this.ctx, 700, 200, 200, 50))
+        this.platforms.push(new Platform(this.ctx, 1100, 400, 200, 50))
     },
     checkCollisionPlatform(platform) {
         if (this.player.playerPosition.x <= platform.positionX + platform.width &&
