@@ -21,7 +21,7 @@ const Game = {
         document.getElementById("restartButton").style.display = "none"
     },
     start() {
-        this.player = new Player(this.ctx, this.canvasSize)
+        this.player = new Player(this.ctx, this.canvasSize, this.platforms)
         this.intervalId = setInterval(() => {
             this.framesCounter++
             if (this.framesCounter % 200 === 0) this.createIngredient()
@@ -39,8 +39,6 @@ const Game = {
             console.log(this.recipe.length)
             this.platforms.forEach((eachPlatform) => {
                 eachPlatform.drawPlatform()
-                this.checkCollisionPlatform(eachPlatform)
-
             })
         }, 1000 / this.FPS)
     },
@@ -68,24 +66,7 @@ const Game = {
         this.platforms.push(new Platform(this.ctx, 700, 200, 200, 50))
         this.platforms.push(new Platform(this.ctx, 1100, 400, 200, 50))
     },
-    checkCollisionPlatform(platform) {
-        if (this.player.playerPosition.x <= platform.positionX + platform.width &&
-            this.player.playerPosition.x + this.player.playerSize.w >= platform.positionX &&
-            this.player.playerPosition.y + this.player.playerSize.h >= platform.positionY &&
-            this.player.playerPosition.y <= platform.positionY + platform.height) {
 
-            if (this.player.speed.y > 1) {
-                this.player.speed.y = 0
-                this.player.playerPosition.y = platform.positionY - this.player.playerSize.h - 0.10
-
-            }
-            if (this.player.speed.y < -1) {
-                this.player.speed.y = 0
-                this.player.poisition.y = platform.positionY + platform.height + 0.01
-
-            }
-        }
-    },
     checkCollisionIngredient(ingredient) { // PENDIENTE POR SOLUCIONAR QUE NO ELIMINE 2 VECES
         if (this.player.playerPosition.x <= ingredient.posX + ingredient.width &&
             this.player.playerPosition.x + this.player.playerSize.w >= ingredient.posX &&

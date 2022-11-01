@@ -1,5 +1,5 @@
 class Player {
-    constructor(ctx, canvasSize) {
+    constructor(ctx, canvasSize, platforms) {
         this.ctx = ctx
         this.canvasSize = canvasSize
         this.playerSize = { w: 50, h: 70 }
@@ -10,7 +10,9 @@ class Player {
         this.lifes = 3
         this.keys = { leftKeyPressed: false, rightKeyPressed: false, spaceKeyPressed: false }
         this.speed = { x: 15, y: 0 }
+        this.platforms = platforms
         this.gravity = 1
+        this.canJump = false
         this.imageInstance = new Image()
         this.imageInstance.src = this.playerImage
         this.initPlayer()
@@ -21,7 +23,7 @@ class Player {
 
     updatePlayer() {
         this.ctx.drawImage(this.imageInstance, this.playerPosition.x, this.playerPosition.y, this.playerSize.w, this.playerSize.h)
-
+        this.checkCollisionPlatform()
         if (this.keys.leftKeyPressed) this.moveLeft()
         if (this.keys.rightKeyPressed) this.moveRight()
         if (this.keys.spaceKeyPressed) this.playerJump()
@@ -30,7 +32,9 @@ class Player {
             this.speed.y += this.gravity
         } else { //SI ESTOY EN EL SUELO QUITO LA VELOCIDAD EN EL EJE Y PARA QUE NO CAIGA
             this.speed.y = 0
+            this.canJump = true
         }
+
     }
     setEvents() {
         document.addEventListener("keydown", ({ code }) => {
@@ -67,7 +71,30 @@ class Player {
         if (this.playerPosition.x < this.canvasSize.w - this.playerSize.w) this.playerPosition.x += this.speed.x
     }
     playerJump() {
-        if (this.speed.y === 0) this.speed.y -= 20
+        if (this.canJump) {
+            this.speed.y -= 20
+            this.canJump = false
+        }
+    }
+    checkCollisionPlatform() {
+        this.platforms.forEach((platform) => {
+            if (this.playerPosition.x <= platform.positionX + platform.width &&
+                this.playerPosition.x + this.playerSize.w >= platform.positionX &&
+                this.playerPosition.y + this.playerSize.h >= platform.positionY &&
+                this.playerPosition.y <= platform.positionY + platform.height) {
+
+                if (this.speed.y > 1) {
+                    this.speed.y = 0
+                    this.canJump = true
+                    this.playerPosition.y = platform.positionY - this.playerSize.h - 0.10
+                }
+                if (this.speed.y < -1) {
+                    this.speed.y = 0
+                    this.position.y = platform.positionY + platform.height
+                }
+            }
+        })
+
     }
 
 }
