@@ -13,6 +13,7 @@ const Game = {
     completedRecipes: 0,
     background: undefined,
     player: undefined,
+    enemy: undefined,
     init() {
         this.getContext()
         this.setDimensions()
@@ -25,9 +26,10 @@ const Game = {
         this.player = new Player(this.ctx, this.canvasSize, this.platforms)
         this.intervalId = setInterval(() => {
             this.framesCounter++
-            if (this.framesCounter % 200 === 0) this.createIngredient()
+            if (this.framesCounter % 200 === 0 && this.enemy === undefined) this.createIngredient()
             if (this.framesCounter % 150 === 0) this.createPlatform()
             if (this.framesCounter % 70 === 0) this.player.cooldown++
+
             this.clearAll()
             this.drawAll()
             this.checkWonGame()
@@ -39,7 +41,6 @@ const Game = {
                 this.clearIngredients()
 
             })
-            console.log(this.recipe.length)
             this.platforms.forEach((eachPlatform) => {
                 eachPlatform.drawPlatform()
             })
@@ -62,6 +63,11 @@ const Game = {
         this.player.updatePlayer()
         this.drawRecipe()
         this.drawLifes()
+        if (this.enemy !== undefined) {
+            this.enemy.updateEnemy()
+            if (this.framesCounter % 100 === 0) this.enemy.shoot()
+        }
+
 
     },
     createPlatform() {
@@ -146,9 +152,9 @@ const Game = {
         document.getElementById("secondButton").style.display = "block"
     },
     checkWonGame() {
-        if (this.completedRecipes === 3) {
-            // AQUI VA LA IMAGEN DE GANAR Y ESO
-            this.gameOver()
+        if (this.completedRecipes === 1) {
+            this.completedRecipes = 0
+            this.enemy = new Enemy(this.ctx, this.canvasSize.w - 220, 450, this.canvasSize, this.player.knives)
         }
     }
 }
