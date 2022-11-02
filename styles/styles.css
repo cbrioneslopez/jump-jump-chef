@@ -1,3 +1,8 @@
+@font-face {
+    font-family: "Pixel Chaos";
+    src: url("../font/pixel-chaos.ttf")
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -5,12 +10,40 @@
 
 body {
     overflow: hidden;
+    min-height: 100vh;
+    min-width: 100vw;
 }
 
-#restartButton {
+#start-screen {
+    width: 100vw;
+    height: 100vh;
+}
+
+.buttonGame {
+    font-family: "Pixel Chaos";
     position: absolute;
-    top: 50%;
+    padding: 15px 10px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    cursor: pointer;
+    background-color: #f67f02;
+    font-size: 32px;
+    width: 300px;
+    top: 80%;
     left: 50%;
     transform: translate(-50%, -50%);
+    border: 3px solid transparent;
+    box-shadow: 0 0 0 3px black, inset 0 0 0 3px black;
+}
+
+.buttonGame:hover {
+    color: white;
+}
+
+#secondButton {
+    display: none
+}
+
+canvas {
     display: none;
 }

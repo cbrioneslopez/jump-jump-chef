@@ -11,8 +11,10 @@ class Player {
         this.keys = { leftKeyPressed: false, rightKeyPressed: false, spaceKeyPressed: false, fkeyPressed: false }
         this.speed = { x: 15, y: 0 }
         this.platforms = platforms
-        this.gravity = 1
         this.knives = []
+        this.gravity = 1
+        this.cooldown = 0
+        this.canShoot = false
         this.canJump = false
         this.imageInstance = new Image()
         this.imageInstance.src = this.playerImage
@@ -25,6 +27,8 @@ class Player {
     updatePlayer() {
         this.ctx.drawImage(this.imageInstance, this.playerPosition.x, this.playerPosition.y, this.playerSize.w, this.playerSize.h)
         this.checkCollisionPlatform()
+        if (this.cooldown >= 1) this.canShoot = true
+        this.knives.forEach((knife) => knife.drawKnife())
         if (this.keys.leftKeyPressed) this.moveLeft()
         if (this.keys.rightKeyPressed) this.moveRight()
         if (this.keys.spaceKeyPressed) this.playerJump()
@@ -36,8 +40,6 @@ class Player {
             this.speed.y = 0
             this.canJump = true
         }
-        this.knives.forEach((knife) => knife.drawKnife())
-
     }
     setEvents() {
         document.addEventListener("keydown", ({ code }) => {
@@ -81,7 +83,7 @@ class Player {
     }
     playerJump() {
         if (this.canJump) {
-            this.speed.y -= 20
+            this.speed.y -= 23
             this.canJump = false
         }
     }
@@ -109,7 +111,15 @@ class Player {
 
     }
     shoot() {
-        this.knives.push(new Knife(this.ctx, this.playerPosition.x + this.playerSize.w, this.playerPosition.y + (this.playerSize.h / 2)))
+        if (this.canShoot) {
+            this.knives.push(new Knife(this.ctx, this.playerPosition.x + this.playerSize.w, this.playerPosition.y + (this.playerSize.h / 2)))
+            this.canShoot = false
+            this.cooldown = 0
+        }
+
+    }
+    clearKnives() {
+        this.knives = this.knives.filter(knife => knife.positionX >= this.canvasSize.w)
     }
 
 }

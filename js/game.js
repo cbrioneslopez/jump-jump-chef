@@ -9,6 +9,7 @@ const Game = {
     recipe: [],
     obstacles: [],
     platforms: [],
+    imageGameOver: new Image(),
     completedRecipes: 0,
     background: undefined,
     player: undefined,
@@ -17,7 +18,8 @@ const Game = {
         this.setDimensions()
         this.createRecipe()
         this.start()
-        document.getElementById("restartButton").style.display = "none"
+        document.getElementById("secondButton").style.display = "none"
+        this.imageGameOver.src = "./images/gameover.png"
     },
     start() {
         this.player = new Player(this.ctx, this.canvasSize, this.platforms)
@@ -25,6 +27,7 @@ const Game = {
             this.framesCounter++
             if (this.framesCounter % 200 === 0) this.createIngredient()
             if (this.framesCounter % 150 === 0) this.createPlatform()
+            if (this.framesCounter % 70 === 0) this.player.cooldown++
             this.clearAll()
             this.drawAll()
             this.checkWonGame()
@@ -134,11 +137,13 @@ const Game = {
     },
     gameOver() {
         this.obstacles = []
-        this.recipe = []
         this.platforms = []
+        this.recipe = []
         this.clearAll()
         clearInterval(this.intervalId)
-        document.getElementById("restartButton").style.display = "block"
+        this.ctx.drawImage(this.imageGameOver, 0, 0, this.canvasSize.w, this.canvasSize.h)
+
+        document.getElementById("secondButton").style.display = "block"
     },
     checkWonGame() {
         if (this.completedRecipes === 3) {
