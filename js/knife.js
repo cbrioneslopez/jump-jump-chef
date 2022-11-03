@@ -1,18 +1,18 @@
 class Knife {
-    constructor(ctx, positionX, positionY) {
+    constructor(ctx, posX, posY) {
         this.ctx = ctx
         this.image = new Image()
         this.image.src = "./images/knife.png"
-        this.positionX = positionX
-        this.positionY = positionY
+        this.posX = posX
+        this.posY = posY
         this.width = 50
         this.height = 30
     }
     drawKnife() {
-        this.ctx.drawImage(this.image, this.positionX, this.positionY, this.width, this.height)
+        this.ctx.drawImage(this.image, this.posX, this.posY, this.width, this.height)
         this.moveKnife()
     }
     moveKnife() {
-        this.positionX += 10
+        this.posX += 10
     }
 }

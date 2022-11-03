@@ -13,5 +13,5 @@ document.getElementById("firstButton").addEventListener("click", () => {
 document.getElementById("secondButton").addEventListener("click", () => {
     document.getElementById("firstButton").style.display = "none"
     document.getElementsByTagName("img")[0].style.display = "none"
-    Game.init()
+    location.reload()
 })
